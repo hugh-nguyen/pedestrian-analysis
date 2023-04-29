@@ -7,6 +7,6 @@ from pedestrian_analysis.pedestrian_analysis_stack import PedestrianAnalysisStac
 
 
 app = cdk.App()
-PedestrianAnalysisStack(app, "PedestrianAnalysisStack")
+PedestrianAnalysisStack(app, "PedestrianAnalysisStack",)
 
 app.synth()
