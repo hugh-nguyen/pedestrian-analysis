@@ -15,15 +15,19 @@ jobs:
           sudo apt install python3-pip
           python -m pip install --upgrade pip setuptools wheel
 
-      - name: Install AWS CLI and CDK
+      - name: Install AWS CLI, CDK & 
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
-          npm install -g aws-cdk
-          pip install aws-cdk-lib
+
+      - name: Install CDK
+        run: npm install -g aws-cdk
 
       - name: Checkout code
         uses: actions/checkout@v3
+      
+      - name: Python Packages
+        run: pip install -r ${{ github.workspace }}/requirements.txt
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -39,6 +43,24 @@ jobs:
         run: |
           cdk synth
           cdk deploy --require-approval never
+        env:
+          AWS_ACCOUNT_ID: 632753217422
+          AWS_REGION: ap-southeast-2
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BUCKET_NAME: pedestrian-analysis-working-bucket
+          CITY_OF_MELBOURNE_API_KEY: ${{ secrets.CITY_OF_MELBOURNE_API_KEY }}
+
+      - name: Install pip
+        run: |
+          sudo apt install python3-pip
+          python -m pip install --upgrade pip setuptools wheel
+      
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Glue Jobs
+        run: python ${{ github.workspace }}/run-glue.py
         env:
           AWS_ACCOUNT_ID: 632753217422
           AWS_REGION: ap-southeast-2
