@@ -1,2 +1,4 @@
+{{ config(schema='raw') }}
+
 select *
-from pedestrian_analysis_raw.sensor_counts
+from sensor_counts

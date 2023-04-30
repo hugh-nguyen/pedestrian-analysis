@@ -1,2 +1,4 @@
+{{ config(schema='report') }}
+
 select *
-from pedestrian_analysis_report.report_top_10_locations_by_day
+from report_top_10_locations_by_day

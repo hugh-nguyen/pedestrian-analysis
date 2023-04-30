@@ -66,7 +66,7 @@ jobs:
           dbt test \
             --project-dir ${{ github.workspace }}/pa_dbt \
             --profiles-dir ${{ github.workspace }}/pa_dbt/profiles \
-            --profile pestrian_analysis_raw_profile
+            --profile pedestrian_analysis_profile
         env:
           AWS_ACCOUNT_ID: 632753217422
           AWS_REGION: ap-southeast-2

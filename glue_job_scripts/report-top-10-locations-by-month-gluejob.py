@@ -5,7 +5,7 @@
 import sys, io, zipfile, pandas as pd, util
 from datetime import datetime
 
-from pyspark.sql.functions import sum, col, rank, desc, lit, month
+from pyspark.sql.functions import sum, col, rank, desc, lit
 from pyspark.sql.window import Window
 from pyspark.sql.functions import row_number
 
@@ -34,7 +34,7 @@ DATABASE_NAME = 'pedestrian_analysis_report'
 OUTPUT_TABLE_NAME = 'report_top_10_locations_by_month'
 
 schema = StructType([
-    StructField("month",StringType(),True),
+    StructField("year_month",StringType(),True),
     StructField("rank",IntegerType(),True),
     StructField("sensor_id",IntegerType(),True),
     StructField("location_name",StringType(),True),
@@ -44,43 +44,32 @@ schema = StructType([
 s3_path = f"s3://{BUCKET_NAME}/report/{OUTPUT_TABLE_NAME}/"
 util.create_glue_catalog_table(DATABASE_NAME, OUTPUT_TABLE_NAME, schema, s3_path)
 
-####  Load sensor_counts
+####  Load sensor_counts_by_day
 
-sensor_count_df = glueContext.create_dynamic_frame.from_catalog(
-    database="pedestrian_analysis_raw",
-    table_name="sensor_counts"
+sensor_count_by_day_df = glueContext.create_dynamic_frame.from_catalog(
+    database="pedestrian_analysis_report",
+    table_name="report_top_10_locations_by_day"
 ).toDF()
 
-sensor_count_df.show(10, truncate=False)
+sensor_count_by_day_df.show(10, truncate=False)
 
-####  Load sensor_reference_data
+####  'date' is currently a full date string
+####  This extracts the year and month
 
-sensor_reference_df = glueContext.create_dynamic_frame.from_catalog(
-    database="pedestrian_analysis_raw",
-    table_name="sensor_reference_data"
-).toDF()
+sensor_count_by_day_df = sensor_count_by_day_df \
+    .withColumn("year_month", col("date").substr(1, 7))
 
-sensor_reference_df.show(10)
+sensor_count_by_day_df.show(10, truncate=False)
 
-
-####  'date_time' is currently a full iso formatted string
-####  This converts date_time to a timestamp and then to a date
-
-sensor_count_df = sensor_count_df \
-    .withColumn("date_time", col("date_time").cast("timestamp")) \
-    .withColumn("month", month("date_time"))
-
-sensor_count_df.show(10, truncate=False)
-
-#### Group by 'month' and 'sensor_id' and sum the 'hourly_counts' per group
-grouped_sensor_count_df = sensor_count_df \
-    .groupBy("month", "sensor_id") \
-    .agg(sum("hourly_count").alias("monthly_count"))
+#### Group by 'year_month' and 'sensor_id' and sum the 'daily_count' per group
+grouped_sensor_count_df = sensor_count_by_day_df \
+    .groupBy("year_month", "sensor_id") \
+    .agg(sum("daily_count").alias("monthly_count"))
 
 grouped_sensor_count_df.show(10, truncate=False)
 
 #### Add a new column 'rank' that ranks the rows within each partition based on their monthly_count
-window_spec = Window.partitionBy("month") \
+window_spec = Window.partitionBy("year_month") \
     .orderBy(desc("monthly_count"))
 ranked_sensor_count_df = grouped_sensor_count_df \
     .withColumn("rank", row_number().over(window_spec))
@@ -89,24 +78,17 @@ ranked_sensor_count_df.show(10, truncate=False)
 
 #### Filter the rows where rank <= 10 to get the top 10 sensor_ids for each month
 top_10_sensors_by_month_df = ranked_sensor_count_df.filter(col("rank") <= 10) \
-    .orderBy(col("month").desc(), col("rank"))
+    .orderBy(col("year_month").desc(), col("rank"))
 
 top_10_sensors_by_month_df.show(10)
 
-#### Left join the reference data in to obtain the correct sensor_description
-top_10_sensors_by_month_df = top_10_sensors_by_month_df.join(
-    sensor_reference_df,
-    col("sensor_id") == col("location_id"),
-    "left"
-)
-
 #### Select and format final report
 top_10_sensors_by_month_df = top_10_sensors_by_month_df.select(
-    col('date').cast('string'),
+    col('year_month').cast('string'),
     col('rank').cast('int'),
     col('sensor_id').cast('int'),
     col('sensor_description').alias('location_name'),
-    col('daily_count').cast('int').alias('daily_count')
+    col('monthly_count').cast('int').alias('monthly_count')
 )
 
 top_10_sensors_by_month_df.show(100, truncate=False)

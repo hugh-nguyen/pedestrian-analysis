@@ -1,2 +1,4 @@
+{{ config(schema='aw') }}
+
 select *
-from pedestrian_analysis_raw.sensor_reference_data
+from sensor_reference_data
