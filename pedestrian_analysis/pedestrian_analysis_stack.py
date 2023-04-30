@@ -29,22 +29,8 @@ class PedestrianAnalysisStack(Stack):
             managed_policies=[
                 iam.ManagedPolicy.from_aws_managed_policy_name('AmazonS3FullAccess'),
                 iam.ManagedPolicy.from_aws_managed_policy_name('service-role/AWSGlueServiceRole'),
-                iam.ManagedPolicy.from_aws_managed_policy_name('service-role/AWSGlueServiceNotebookRole'),
             ],
         )
-
-        # statement = iam.PolicyStatement(
-        #     effect=iam.Effect.ALLOW,
-        #     actions=["iam:PassRole"],
-        #     resources=[job_role.role_arn],
-        #     conditions={
-        #         "StringEquals": {
-        #             "iam:PassedToService": ["glue.amazonaws.com"]
-        #         }
-        #     }
-        # )
-        # job_role.add_to_policy(statement)
-
 
         # Create a Glue database for this work
         layers = ['raw', 'report']
@@ -53,19 +39,11 @@ class PedestrianAnalysisStack(Stack):
             database = glue.CfnDatabase(
                 self,
                 database_name,
-                catalog_id=os.environ.get('CDK_DEPLOY_ACCOUNT'),
+                catalog_id=os.environ.get('AWS_ACCOUNT_ID'),
                 database_input={
                     'name': database_name
                 }
             )
-
-        # # Create an S3 bucket to store the script file
-        # bucket = s3.Bucket(
-        #     self,
-        #     'GlueJobBucket',
-        #     bucket_name=bucket_name,
-        #     removal_policy=RemovalPolicy.DESTROY
-        # )
 
         bucket = s3.Bucket.from_bucket_name(
             self,
