@@ -1,7 +1,8 @@
 import boto3, os, time, sys
 
 # Initialize the Glue client
-glue = boto3.client('glue')
+region = os.environ['AWS_REGION']
+glue = boto3.client('glue', region_name=region)
 bucket_name = os.environ.get('BUCKET_NAME')
 
 for script in os.listdir('glue_job_scripts'):

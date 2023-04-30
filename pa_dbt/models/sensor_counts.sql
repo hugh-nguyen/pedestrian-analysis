@@ -1,0 +1,2 @@
+select *
+from pedestrian_analysis_raw.sensor_counts

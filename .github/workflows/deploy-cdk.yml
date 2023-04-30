@@ -15,7 +15,7 @@ jobs:
           sudo apt install python3-pip
           python -m pip install --upgrade pip setuptools wheel
 
-      - name: Install AWS CLI, CDK & 
+      - name: Install AWS CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
@@ -51,20 +51,24 @@ jobs:
           BUCKET_NAME: pedestrian-analysis-working-bucket
           CITY_OF_MELBOURNE_API_KEY: ${{ secrets.CITY_OF_MELBOURNE_API_KEY }}
 
-      - name: Install pip
-        run: |
-          sudo apt install python3-pip
-          python -m pip install --upgrade pip setuptools wheel
-      
-      - name: Checkout code
-        uses: actions/checkout@v3
+      # - name: Run Glue Jobs
+      #   run: python ${{ github.workspace }}/run-glue.py
+      #   env:
+      #     AWS_ACCOUNT_ID: 632753217422
+      #     AWS_REGION: ap-southeast-2
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     BUCKET_NAME: pedestrian-analysis-working-bucket
+      #     CITY_OF_MELBOURNE_API_KEY: ${{ secrets.CITY_OF_MELBOURNE_API_KEY }}
 
-      - name: Run Glue Jobs
-        run: python ${{ github.workspace }}/run-glue.py
+      - name: Run DBT tests
+        run: |
+          dbt test \
+            --project-dir ${{ github.workspace }}/pa_dbt \
+            --profiles-dir ${{ github.workspace }}/pa_dbt/profiles \
+            --profile pestrian_analysis_raw_profile
         env:
           AWS_ACCOUNT_ID: 632753217422
           AWS_REGION: ap-southeast-2
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          BUCKET_NAME: pedestrian-analysis-working-bucket
-          CITY_OF_MELBOURNE_API_KEY: ${{ secrets.CITY_OF_MELBOURNE_API_KEY }}
