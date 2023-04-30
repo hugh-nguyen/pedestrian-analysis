@@ -71,4 +71,8 @@ Tests & QA Issues Encountered
 
 Data Model
 ============
-
+There are six data assets
+- raw.sensor_counts
+- raw.sensor_reference_data
+- report.location_declines_due_to_lockdown
+![alt text](/images/pa-data-model.png)

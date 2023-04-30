@@ -45,7 +45,6 @@ s3_path = f"s3://{BUCKET_NAME}/report/{OUTPUT_TABLE_NAME}/"
 util.create_glue_catalog_table(DATABASE_NAME, OUTPUT_TABLE_NAME, schema, s3_path)
 
 ####  Load sensor_counts
-
 sensor_count_df = glueContext.create_dynamic_frame.from_catalog(
     database="pedestrian_analysis_raw",
     table_name="sensor_counts"
@@ -54,7 +53,6 @@ sensor_count_df = glueContext.create_dynamic_frame.from_catalog(
 sensor_count_df.show(10, truncate=False)
 
 ####  Load sensor_reference_data
-
 sensor_reference_df = glueContext.create_dynamic_frame.from_catalog(
     database="pedestrian_analysis_raw",
     table_name="sensor_reference_data"
