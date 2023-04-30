@@ -1,0 +1,2 @@
+select *
+from pedestrian_analysis_report.report_top_10_locations_by_day

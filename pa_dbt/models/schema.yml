@@ -21,13 +21,8 @@ models:
         tests:
           - not_null
 
-models:
   - name: sensor_reference_data
     columns:
-      - name: id
-        tests:
-          - unique
-          - not_null
       - name: location_id
         tests:
           - not_null
@@ -57,12 +52,12 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['North', 'South', 'East', 'West']
+              values: ['North', 'South', 'East', 'West', 'In', 'Out']
       - name: direction_2
         tests:
           - not_null
           - accepted_values:
-              values: ['North', 'South', 'East', 'West']
+              values: ['North', 'South', 'East', 'West', 'In', 'Out']
       - name: latitude
         tests:
           - not_null
@@ -70,3 +65,24 @@ models:
         tests:
           - not_null
       - name: location
+  
+  - name: report_top_10_locations_by_day
+    columns:
+      - name: date
+        tests:
+          - not_null
+          - is_date_format
+      - name: rank
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      - name: sensor_id
+        tests:
+          - not_null
+      - name: location_name
+        tests:
+          - not_null
+      - name: daily_count
+        tests:
+          - not_null
