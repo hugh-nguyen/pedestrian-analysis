@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: sensor_counts
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+      - name: date_time
+        tests:
+          - not_null
+          - is_iso_format
+      - name: sensor_id
+        tests:
+          - not_null
+      - name: sensor_name
+        tests:
+          - not_null
+      - name: hourly_count
+        tests:
+          - not_null
