@@ -1,4 +1,4 @@
-{{ config(schema='aw') }}
+{{ config(schema='raw') }}
 
 select *
 from sensor_reference_data

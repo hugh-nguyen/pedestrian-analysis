@@ -29,7 +29,7 @@ pedestrian_analysis_profile:
       region_name: ap-southeast-2
       s3_data_dir: s3://pedestrian-analysis-working-bucket/report
       s3_staging_dir: s3://huy-nguyen-00001-audit-logs/athena-logs/
-      schema: pedestrian_analysis_
+      schema: pedestrian_analysis
       threads: 2
       type: athena
   target: dev
