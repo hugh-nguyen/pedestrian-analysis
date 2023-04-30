@@ -20,7 +20,6 @@ class PedestrianAnalysisStack(Stack):
 
         # Create a bucket name with a UUID that is almost certainly globally unqiue
         bucket_name = os.environ.get('BUCKET_NAME')
-        print('!!BUCKET_NAME:', bucket_name)
 
         # Create an IAM role for the Glue job
         job_role = iam.Role(
@@ -34,17 +33,17 @@ class PedestrianAnalysisStack(Stack):
             ],
         )
 
-        statement = iam.PolicyStatement(
-            effect=iam.Effect.ALLOW,
-            actions=["iam:PassRole"],
-            resources=[job_role.role_arn],
-            conditions={
-                "StringEquals": {
-                    "iam:PassedToService": ["glue.amazonaws.com"]
-                }
-            }
-        )
-        job_role.add_to_policy(statement)
+        # statement = iam.PolicyStatement(
+        #     effect=iam.Effect.ALLOW,
+        #     actions=["iam:PassRole"],
+        #     resources=[job_role.role_arn],
+        #     conditions={
+        #         "StringEquals": {
+        #             "iam:PassedToService": ["glue.amazonaws.com"]
+        #         }
+        #     }
+        # )
+        # job_role.add_to_policy(statement)
 
 
         # Create a Glue database for this work

@@ -31,12 +31,14 @@ jobs:
           node-version: '14.x'
 
       - name: Install dependencies
-        run: npm install
+        run: | 
+          npm install -g aws-cdk@2.76.0
+          cdk --version
 
       - name: Deploy to AWS
         run: |
           cdk synth
-          cdk bootstrap
+          cdk bootstrap aws://632753217422/ap-southeast-2 aws://632753217422/us-east-1
           cdk deploy --require-approval never
         env:
           CDK_DEPLOY_REGION: ap-southeast-2
