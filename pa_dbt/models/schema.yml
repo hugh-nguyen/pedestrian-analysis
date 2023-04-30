@@ -20,3 +20,53 @@ models:
       - name: hourly_count
         tests:
           - not_null
+
+models:
+  - name: sensor_reference_data
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+      - name: location_id
+        tests:
+          - not_null
+          - unique
+      - name: sensor_description
+        tests:
+          - not_null
+      - name: sensor_name
+        tests:
+          - not_null
+      - name: installation_date
+        tests:
+          - not_null
+          - is_date_format
+      - name: note
+      - name: location_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Indoor', 'Outdoor']
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['A']
+      - name: direction_1
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['North', 'South', 'East', 'West']
+      - name: direction_2
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['North', 'South', 'East', 'West']
+      - name: latitude
+        tests:
+          - not_null
+      - name: longitude
+        tests:
+          - not_null
+      - name: location
