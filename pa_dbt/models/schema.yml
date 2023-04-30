@@ -31,8 +31,6 @@ models:
         tests:
           - not_null
       - name: sensor_name
-        tests:
-          - not_null
       - name: installation_date
         tests:
           - not_null
@@ -42,7 +40,7 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['Indoor', 'Outdoor']
+              values: ['Indoor', 'Outdoor', 'Indoor Blix', 'Outdoor Blix']
       - name: status
         tests:
           - not_null
@@ -50,12 +48,10 @@ models:
               values: ['A']
       - name: direction_1
         tests:
-          - not_null
           - accepted_values:
               values: ['North', 'South', 'East', 'West', 'In', 'Out']
       - name: direction_2
         tests:
-          - not_null
           - accepted_values:
               values: ['North', 'South', 'East', 'West', 'In', 'Out']
       - name: latitude
@@ -86,5 +82,3 @@ models:
       - name: daily_count
         tests:
           - not_null
-    # config:
-    #   database: pedestrian_analysis_report

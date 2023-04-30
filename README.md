@@ -6,29 +6,33 @@ This repository contains the artefacts requested as part of the application proc
 
 ## Table of contents
 <!--ts-->
-   * [High Level Achitecture](#high-level-architecture)
+   * [High Level Architecture](#high-level-architecture)
    * [Artefacts](#artefacts)
       * [Glue Jupyter Notebooks](#glue-jupyter-notebooks)
-      * [Glue/Spark Scripts](#glue-scripts)
+      * [Glue ETL Scripts](#glue-etl-scripts)
       * [Parquet Tables in S3](#parquet-tables-in-s3)
       * [Glue Catalog Tables](#glue-catalog-tables)
       * [Testing in DBT Athena](#testing-in-dbt-athena)
    * [IAC - CDK](#iac---cdk)
    * [CICD - GitHub Actions](#cicd---github-actions)
-   * [Tests & QA Issues Encountered](#tests-&-qa-issues-encountered)
+   * [Tests & QA Issues Encountered](#tests--qa-issues-encountered)
    * [Data Model](#data-model)
 <!--te-->
 
 High Level Achitecture
 ============
+A user can interact with this product in two ways
+- Viewing the notebook reports found in the /glue_notebooks directory
+- Pushing a change to the repository will initiate a Github action that deploys to CDK, runs all the glue jobs and runs the DBT tests
 
+![alt text](/images/pa-hl-architecture.png)
 
 Glue Jupyter Notebooks
 ============
 The Jupyter Notebooks are generated using Glue servers - https://docs.aws.amazon.com/glue/latest/dg/console-notebooks.html
 
 
-Glue Scripts
+Glue ETL Scripts
 ============
 
 The glue scripts are located in ./glue_job_scripts and are loaded in Glue with CDK
@@ -68,6 +72,19 @@ A GitHub Action is triggered after every push to the main branch of this reposit
 
 Tests & QA Issues Encountered
 ============
+You can view some of the tests that have been run previously on the data using DBT here
+
+https://github.com/hugh-nguyen/pedestrian-analysis/actions/runs/4844324305/jobs/8632539622
+
+Issues found are below
+
+- The first case shows us the location_type of sensor_reference_data has to two outlier values "Indoor Blix" and "Outdoor Blix"
+- Location name is often null in report_top_10_locations_by_day, and this is because a lot of 
+sensor_ids are missing from the reference data
+- Direction_1, Direction_2 and installation_date have unexpected null values
+
+![alt text](/images/pa-dbt-1.png)
+![alt text](/images/pa-dbt-2.png)
 
 Data Model
 ============

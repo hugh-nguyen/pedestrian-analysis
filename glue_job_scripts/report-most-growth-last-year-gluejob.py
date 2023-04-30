@@ -6,7 +6,7 @@ from pyspark.sql.types import (
 )
 
 from pyspark.context import SparkContext
-from pyspark.sql.functions import sum, col, rank, desc, lit, when
+from pyspark.sql.functions import sum, col, rank, asc, lit, when
 from pyspark.sql.window import Window
 from awsglue.utils import getResolvedOptions
 from awsglue.context import GlueContext
@@ -23,16 +23,16 @@ job.init(args['JOB_NAME'], args)
 ####  Create output glue table if it doesn't already exist
 ##### The results of this notebook will be loaded into this table
 
-BUCKET_NAME = args['BUCKET_NAME']
+BUCKET_NAME = 'pedestrian-analysis-working-bucket'
 DATABASE_NAME = 'pedestrian_analysis_report'
-OUTPUT_TABLE_NAME = 'report_location_declines_due_to_lockdown'
+OUTPUT_TABLE_NAME = 'report_most_growth_last_year'
 
 schema = StructType([
     StructField("location_name", StringType(), True),
-    StructField("2019_count", IntegerType(), True),
-    StructField("2022_count", IntegerType(), True),
-    StructField("decline", IntegerType(), True),
-    StructField("decline_percent", DoubleType(), True),
+    StructField("count_previous_year", IntegerType(), True),
+    StructField("count_last_year", IntegerType(), True),
+    StructField("growth", IntegerType(), True),
+    StructField("growth_percent", DoubleType(), True),
 ])
 
 s3_path = f"s3://{BUCKET_NAME}/report/{OUTPUT_TABLE_NAME}/"
