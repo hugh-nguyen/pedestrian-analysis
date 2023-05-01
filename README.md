@@ -21,15 +21,21 @@ This repository contains the artefacts requested as part of the application proc
 
 High Level Achitecture
 ============
-A user can interact with this product in two ways
-- Viewing the notebook reports found in the /glue_notebooks directory
+A user can interact with this product in three ways
+- Viewing the notebook reports found here - [Glue Notebooks](glue_notebooks/)
 - Pushing a change to the repository will initiate a Github action that deploys to CDK, runs all the glue jobs and runs the DBT tests
+- - [Example test run](https://github.com/hugh-nguyen/pedestrian-analysis/actions/runs/4847011503/jobs/8636882021)
+- Exploration through Athena with SQL compliant interface
 
 ![alt text](/images/pa-hl-architecture.png)
 
 Glue Jupyter Notebooks
 ============
-The Jupyter Notebooks are generated using Glue servers - https://docs.aws.amazon.com/glue/latest/dg/console-notebooks.html
+The Jupyter Notebooks are generated using Glue servers 
+- https://docs.aws.amazon.com/glue/latest/dg/console-notebooks.html
+
+You can find the Jupyter Notebooks exported and uploaded here
+- [Glue Notebooks](glue_notebooks/)
 
 
 Glue ETL Scripts
@@ -44,6 +50,8 @@ Parquet Tables in S3
 ============
 Assets are stored in S3 in the bucket "pedestrian-analysis-working-bucket"
 - Data is loaded into here using the Glue Jobs or Notebooks
+![alt text](/images/pa-s3-parquet-1.png)
+![alt text](/images/pa-s3-parquet-2.png)
 
 Glue Catalog Tables
 ============

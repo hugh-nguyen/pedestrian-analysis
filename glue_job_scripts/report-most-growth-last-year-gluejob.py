@@ -6,7 +6,7 @@ from pyspark.sql.types import (
 )
 
 from pyspark.context import SparkContext
-from pyspark.sql.functions import sum, col, rank, asc, lit, when
+from pyspark.sql.functions import sum, col, rank, desc, lit, when
 from pyspark.sql.window import Window
 from awsglue.utils import getResolvedOptions
 from awsglue.context import GlueContext
@@ -54,55 +54,51 @@ sensor_reference_df = glueContext.create_dynamic_frame.from_catalog(
 
 sensor_reference_df.show(10)
 
-#### Calculate sensor counts 2019
+#### Calculate sensor counts previous year
 ##### Because the cutsoff at 2022-11-01, for the purpose of this analysis we are setting the end of each year to November 11
-sensor_counts_2019_df = sensor_counts_df \
-    .filter(col('date_time') >= '2018-11-01') \
-    .filter(col('date_time') < '2019-11-01') \
+previous_year_df = sensor_counts_df \
+    .filter(col('date_time') >= '2020-11-01') \
+    .filter(col('date_time') < '2021-11-01') \
     .groupBy('sensor_id') \
-    .agg(sum('hourly_count').alias('count_2019'))
+    .agg(sum('hourly_count').alias('count_previous_year'))
 
-sensor_counts_2019_df.show(10)
+previous_year_df.show(10)
 
-#### Calculate sensor counts 2022
-sensor_counts_2022_df = sensor_counts_df \
+#### Calculate sensor counts last year
+last_year_df = sensor_counts_df \
     .filter(col('date_time') >= '2021-11-01') \
     .filter(col('date_time') < '2022-11-01') \
     .groupBy('sensor_id') \
-    .agg(sum('hourly_count').alias('count_2022'))
+    .agg(sum('hourly_count').alias('count_last_year'))
 
-sensor_counts_2022_df.show(10)
+last_year_df.show(10)
 
 #### Calculate the decline and decline percentages for each sensor
-sensor_decline_df = sensor_counts_2019_df \
-    .join(sensor_counts_2022_df, on='sensor_id', how='inner') \
-    .withColumn('decline', (col('count_2019') - col('count_2022'))) \
-    .withColumn(
-        'decline_percent',
-        ((col('count_2019') - col('count_2022')) / col('count_2019')) * 100
-    )
+growth_df = previous_year_df \
+    .join(last_year_df, on='sensor_id', how='inner') \
+    .withColumn('growth', (col('count_last_year') - col('count_previous_year'))) \
+    .withColumn('growth_percent', ((col('count_last_year') - col('count_previous_year')) / col('count_previous_year')) * 100)
 
-sensor_decline_df.show(10)
+growth_df.show(10)
 
 #### Join reference and select relevant columns
-sensor_decline_df = sensor_decline_df.join(
+growth_df = growth_df.join(
     sensor_reference_df,
     col("sensor_id") == col("location_id"),
     "left"
 )
 
-sensor_decline_df = sensor_decline_df.select(
+growth_df = growth_df.select(
     col('sensor_id'),
     col('sensor_description').alias('location_name'),
-    col('count_2019').cast('int'),
-    col('count_2022').cast('int'),
-    col('decline'),
-    col('decline_percent')
+    col('count_previous_year').cast('int'),
+    col('count_last_year').cast('int'),
+    col('growth'),
+    col('growth_percent')
 ).orderBy(
-    desc('decline_percent')
+    desc('growth_percent')
 )
 
-sensor_decline_df.show(100, truncate=False)
+growth_df.show(100, truncate=False)
 
-#### Upload to S3
-util.upload_to_s3(glueContext, sensor_decline_df, s3_path)
+util.upload_to_s3(glueContext, growth_df, s3_path)
