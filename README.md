@@ -4,6 +4,12 @@ Project: Pedestrian Analysis
 ## Description
 This repository contains the artefacts requested as part of the application process for a certain data role
 
+The reports below are the primary artefacts
+- [Top 10 Locations By Day](glue_notebooks/report-top-10-locations-per-day-notebook.ipynb)
+- [Top 10 Locations By Month](glue_notebooks/report-top-10-locations-by-month-notebook.ipynb)
+- [Most Decline Due to Lockdowns](glue_notebooks/report-most-decline-due-to-lockdown-notebook.ipynb)
+- [Most Growth Last Year](glue_notebooks/report-most-growth-last-year-notebook.ipynb.ipynb)
+
 ## Table of contents
 <!--ts-->
    * [High Level Architecture](#high-level-architecture)
@@ -17,6 +23,7 @@ This repository contains the artefacts requested as part of the application proc
    * [IAC - CDK](#iac---cdk)
    * [Tests & QA Issues Encountered](#tests--qa-issues-encountered)
    * [Data Model](#data-model)
+   * [Source Data](#source-data)
 <!--te-->
 
 High Level Achitecture
