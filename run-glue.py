@@ -10,7 +10,7 @@ for script in os.listdir('glue_job_scripts'):
     if script.endswith('-gluejob.py'):
         
         print(script)
-        job_name = script.strip('.py').replace('-', '_')
+        job_name = script.strip('.py')
 
         arguments = {
             '--job-language': 'python',

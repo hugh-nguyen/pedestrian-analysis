@@ -63,7 +63,7 @@ class PedestrianAnalysisStack(Stack):
             
             if script.endswith('-gluejob.py'):
 
-                job_name = script.strip('.py').replace('-', '_')
+                job_name = script.strip('.py')
                 glue.CfnJob(
                     self,
                     job_name,
