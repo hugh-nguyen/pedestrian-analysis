@@ -13,8 +13,8 @@ This repository contains the artefacts requested as part of the application proc
       * [Parquet Tables in S3](#parquet-tables-in-s3)
       * [Glue Catalog Tables](#glue-catalog-tables)
       * [Testing in DBT Athena](#testing-in-dbt-athena)
-   * [IAC - CDK](#iac---cdk)
    * [CICD - GitHub Actions](#cicd---github-actions)
+   * [IAC - CDK](#iac---cdk)
    * [Tests & QA Issues Encountered](#tests--qa-issues-encountered)
    * [Data Model](#data-model)
 <!--te-->
@@ -41,7 +41,7 @@ You can find the Jupyter Notebooks exported and uploaded here
 Glue ETL Scripts
 ============
 
-The glue scripts are located in ./glue_job_scripts and are loaded in Glue with CDK
+The glue scripts are located in [Glue Job Scripts](/glue_job_scripts) and are loaded in Glue with CDK
 The glue scripts use spark and python to read data from either the glue catalog/s3 or the City of Melbourne API
 - This data gets loaded into another glue table which can be queried using Athena
 - The GitHub Action associated with this repo runs DBT tests using Athena
@@ -57,26 +57,29 @@ Glue Catalog Tables
 ============
 Assets are managed in the Glue/Hive Metadata Catalog
 - This catalog makes access to this data via Glue, Athena and other platforms significantly more easy
+![alt text](/images/pa-glue-cat-1.png)
+![alt text](/images/pa-glue-cat-2.png)
 
 Testing in DBT Athena
 ============
 DBT is used for easily organising, reusing and running tests
 - The DBT tests will automatically be run when changes are pushed to this repository
 - Reusable/Generic Tests are located in pa_dbt/models/schema.yml
-- Specific Tests are located in pa_dbt/tests/
+- Specific Tests are located in [DBT Tests](pa_dbt/tests)
 
-
-IAC - CDK
-============
-CDK is used to deploy assets to AWS and allows us to do in a programmatic way with Python
-The specification can be found in ./pedestrian_analysis/pedestrian_analysis_stack.py
-- The CDK deploys IAM roles, Glue Databases, some s3 files and glue jobs
 
 CICD
 ============
 A GitHub Action is triggered after every push to the main branch of this repository
-- The workflow is defined in .github/workflows/deploy-cdk.yml
+- The workflow is defined in [/.github/workflows/deploy-cdk.yml](/.github/workflows/deploy-cdk.yml)
 - The workflow installs all of the packages/dependencies, deploys to CDK, runs all of the glue jobs and all the DBT tests
+
+IAC - CDK
+============
+CDK is used to deploy assets to AWS and allows us to do in a programmatic way with Python
+The specification can be found in [pedestrian_analysis/pedestrian_analysis_stack.py]/pedestrian_analysis/pedestrian_analysis_stack.py
+- The CDK deploys IAM roles, Glue Databases, some s3 files and glue jobs
+
 
 Tests & QA Issues Encountered
 ============
